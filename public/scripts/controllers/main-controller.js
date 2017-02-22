@@ -6,7 +6,7 @@ angular.module('app').controller('mainController', function ($scope, $log, $http
 	$scope.greeting = undefined;
 	
 	function getGreeting() {
-		$http.get('/greeting', {params: {name: 'Mr. World'}}).then(
+		$http.get('/api/greeting', {params: {name: 'Mr. World'}}).then(
 			function (res) {
 				$scope.greeting = res.data.greeting;
 			},
