@@ -1,6 +1,6 @@
 /*global angular, requestAnimationFrame*/
 
-angular.module('app').controller('gameController', function ($scope, $log, $timeout, $window) {
+angular.module('app').controller('gameController', function ($scope, $log, $timeout, $window, gameFactory) {
 	'use strict';
 	var game = {};
 
@@ -26,35 +26,14 @@ angular.module('app').controller('gameController', function ($scope, $log, $time
 		}
 	};
 
-	game.drawShip = function (context,x,y,colors) {
-		var p = [[-50,-30], [50,-30], [50,30], [-50,30], [-50,26], [-60,30], [-60,5], [-50,9], [-50,-9], [-60,-5], [-60,-30], [-50,-26], [-50,-30]];
+	game.drawPart = function (context,x,y,points,color) {
 		context.beginPath();
-		context.moveTo(x+0,y+0);
-		for (var i = 0; i < p.length; i++) {
-			context.lineTo(x+p[i][0],y+p[i][1]);
+		context.moveTo(x,y);
+		for (var i = 0; i < points.length; i++) {
+			context.lineTo(x+points[i][0],y+points[i][1]);
 		}
 		context.closePath();
-		context.fillStyle = colors.ship1;
-		context.fill();
-
-		p = [[0,-30], [0,-33], [-10,-33], [-10,-45], [45,-45], [45,-33], [25,-33], [25,-30], [0,-30]];
-		context.beginPath();
-		context.moveTo(x+0,y+0);
-		for (var i = 0; i < p.length; i++) {
-			context.lineTo(x+p[i][0],y+p[i][1]);
-		}
-		context.closePath();
-		context.fillStyle = colors.ship2;
-		context.fill();
-
-		p = [[0,30], [0,33], [-10,33], [-10,45], [45,45], [45,33], [25,33], [25,30], [0,30]];
-		context.beginPath();
-		context.moveTo(x+0,y+0);
-		for (var i = 0; i < p.length; i++) {
-			context.lineTo(x+p[i][0],y+p[i][1]);
-		}
-		context.closePath();
-		context.fillStyle = colors.ship2;
+		context.fillStyle = color;
 		context.fill();
 	}
 	
@@ -68,12 +47,23 @@ angular.module('app').controller('gameController', function ($scope, $log, $time
 		$scope.ctx.fill();
 	};
 
-	game.entity = function () {
-		this.pos = [0,0];
-		this.vel = [0,0];
+	game.entity = function (x,y,parts) {
+		this.pos = [x,y];
+		this.parts = parts;
 		this.draw = function () {
-			game.drawShip($scope.ctx,90,410,game.global.colors);
+			for (var i = 0; i < this.parts.length; i++) {
+				this.parts[i].draw(this.pos[0], this.pos[1]);
+			}
 		};
+	};
+
+	game.part = function (x,y,points,color) {
+		this.pos = [x,y];
+		this.points = points;
+		this.color = color;
+		this.draw = function (x,y) {
+			game.drawPart($scope.ctx,x+this.pos[0],y+this.pos[1],this.points,this.color);
+		}
 	};
 	
 	//Keeps track of global game stuff.
@@ -83,9 +73,12 @@ angular.module('app').controller('gameController', function ($scope, $log, $time
 		colors: {
 			background: "rgba(30,30,30,1)",
 			ship1: "rgba(140,150,160,1)",
-			ship2: "rgba(140,130,130,1)"
+			ship2: "rgba(140,130,130,1)",
+			ship3: "rgba(100,90,90,1)"
 		},
-		entities: []
+		entities: [],
+		parts: gameFactory.parts,
+		utils: gameFactory.utils
 	};
 	
 	/**
@@ -94,7 +87,13 @@ angular.module('app').controller('gameController', function ($scope, $log, $time
 	game.init = function () {
 		game.loop();
 		game.global.nextFrame = Date.now();
-		game.global.entities.push(new game.entity());
+		game.global.entities.push(new game.entity(90,420,[
+			new game.part(-50,-10,game.global.parts.nozzle1,game.global.colors.ship3),
+			new game.part(-50, 26,game.global.parts.nozzle1,game.global.colors.ship3),
+			new game.part(0,-30,game.global.parts.gun1,game.global.colors.ship2),
+			new game.part(0,30,game.global.utils.mirrorX(game.global.parts.gun1),game.global.colors.ship2),
+			new game.part(-50,-30,game.global.parts.body1,game.global.colors.ship1)
+		]));
 	};
 	
 	/**
