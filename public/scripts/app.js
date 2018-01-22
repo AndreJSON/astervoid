@@ -1,16 +1,6 @@
 /*global angular */
 
-angular.module('app', ['ngMaterial', 'ngRoute', 'ngMdIcons'])
-	.config(function ($routeProvider) {
-		'use strict';
-		$routeProvider
-			.when('/', {
-				templateUrl: 'views/home.html'
-			})
-			.otherwise({
-				templateUrl: 'views/404.html'
-			});
-	})
+angular.module('app', ['ngMaterial', 'ngMdIcons'])
 	.config(function ($mdThemingProvider) {
 		'use strict';
 		$mdThemingProvider.theme('default')
@@ -20,7 +10,7 @@ angular.module('app', ['ngMaterial', 'ngRoute', 'ngMdIcons'])
 				'hue-2': '600',
 				'hue-3': 'A100'
 			})
-			.accentPalette('yellow', {
-				'default': '200'
+			.accentPalette('purple', {
+				'default': '400'
 			});
 	});

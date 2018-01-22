@@ -8,8 +8,6 @@ var chalk = require('chalk');
 var bodyParser = require('body-parser');
 app.use(bodyParser.json());
 
-var router = require('./routes.js');
-app.use('/api', router);
 require('./paths.js')(app);
 
 app.listen(port);
