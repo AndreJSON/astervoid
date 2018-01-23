@@ -83,7 +83,7 @@ angular.module('app').controller('gameController', function ($scope, $log, $time
 	game.createStar = function () {
 		var size = (2.5 * Math.random());
 		var initPos = [game.global.windowWidth+10,Math.random()*game.global.windowHeight];
-		var body = new game.part([0,-20],game.global.utils.scale(game.global.parts.star1,size,size),game.global.colors.star1);
+		var body = new game.part([0,-20],game.utils.scale(game.global.parts.star1,size,size),game.global.colors.star1);
 		var movement = {nextPos: function (pos) {
 			return [pos[0]-(0.3*size),pos[1]];
 		}};
@@ -96,7 +96,7 @@ angular.module('app').controller('gameController', function ($scope, $log, $time
 		nextTick: undefined,
 		colors: gameFactory.colors,
 		parts: gameFactory.parts,
-		utils: gameFactory.utils,
+		entityBuilder: gameFactory.entityBuilder,
 		entities: [],
 		stars: [],
 		starDensity: 0.04
@@ -109,25 +109,10 @@ angular.module('app').controller('gameController', function ($scope, $log, $time
 		game.entity = classFactory.entity;
 		game.part = classFactory.part;
 		game.movement = classFactory.movement;
+		game.utils = gameFactory.utils;
 		game.global.nextTick = Date.now();
-		game.global.entities.push(new game.entity([90,420],
-			{
-				bhp: 10,
-				mhp: 10,
-				chp: 10
-			},
-			[
-				new game.part([-60,-28],game.global.parts.throttle1,game.global.colors.fire1),
-				new game.part([-60,8],game.global.parts.throttle1,game.global.colors.fire1),
-				new game.part([-50,-10],game.global.parts.nozzle1,game.global.colors.ship3),
-				new game.part([-50, 26],game.global.parts.nozzle1,game.global.colors.ship3),
-				new game.part([0,-30],game.global.parts.gun1,game.global.colors.ship2),
-				new game.part([0,30],game.global.utils.mirrorX(game.global.parts.gun1),game.global.colors.ship2),
-				new game.part([-50,-30],game.global.parts.body1,game.global.colors.ship1)
-			],
-			undefined,
-			new game.movement()
-		));
+		game.global.entities.push(game.global.entityBuilder.player());
+		game.global.entities.push(game.global.entityBuilder.enemy1());
 		game.drawLoop();
 		game.tickLoop();
 	};
