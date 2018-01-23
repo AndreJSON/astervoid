@@ -36,7 +36,7 @@ angular.module('app').factory('gameFactory', function (classFactory) {
 			},
 			enemy1: function () {
 				return new entity(
-					[1400,420],
+					[1600,420],
 					{
 						bhp: 3,
 						mhp: 3,
@@ -48,7 +48,14 @@ angular.module('app').factory('gameFactory', function (classFactory) {
 						new part([-50,0],data.utils.mirrorY(data.parts.body2),data.colors.ship3)
 					],
 					undefined,
-					new movement()
+					{nextPos: function (pos)
+						{
+							if (pos[0] > 1400)
+								return [pos[0]-3,pos[1]]
+							else
+								return [pos[0],pos[1]];
+						}
+					}
 				);
 			}
 		},
@@ -57,8 +64,9 @@ angular.module('app').factory('gameFactory', function (classFactory) {
 			ship1: "rgba(140,150,160,1)",
 			ship2: "rgba(140,130,130,1)",
 			ship3: "rgba(100,90,90,1)",
+			fire1: "rgba(255,120,0,1)",
 			star1: "rgba(255,255,255,0.85)",
-			fire1: "rgba(255,120,0,1)"
+			bar1:  "rgba(60,60,60,1)"
 		},
 		utils: {
 			mirrorX: function (points) {
@@ -81,6 +89,16 @@ angular.module('app').factory('gameFactory', function (classFactory) {
 					res.push([changeX*points[i][0],changeY*points[i][1]]);
 				}
 				return res;
+			},
+			drawPolygon: function (points,offset,color,context) {
+				context.beginPath();
+				context.moveTo(points[0][0]+offset[0],points[0][1]+offset[1]);
+				for (var i = 1; i < points.length; i++) {
+					context.lineTo(points[i][0]+offset[0],points[i][1]+offset[1]);
+				}
+				context.closePath();
+				context.fillStyle = color;
+				context.fill();
 			}
 		}
 	}
