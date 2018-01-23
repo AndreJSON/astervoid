@@ -11,7 +11,7 @@ angular.module('app').controller('gameController', function ($scope, $log, $time
 		if (Date.now() > game.global.nextTick) {
 			game.global.nextTick += (1000 / game.global.tps);
 			game.tick();
-			$log.info("Ticked the game.");
+			//$log.info("Ticked the game.");
 		}
 		$timeout(game.tickLoop, 10);
 	};
@@ -19,13 +19,48 @@ angular.module('app').controller('gameController', function ($scope, $log, $time
 	game.drawLoop = function () {
 		game.global.nextFrame = Date.now() + (1000 / game.global.fps);
 		game.draw($scope.ctx);
-		$log.info("Drew background.");
+		//$log.info("Drew background.");
 		requestAnimationFrame(game.drawLoop);
 	};
 
 	game.tick = function () {
+		game.move();
+		game.remove();
+		if (Math.random() < game.global.starDensity) {
+			game.global.stars.push(game.createStar());
+		}
+	};
+
+	game.move = function () {
+		for (var i = 0; i < game.global.stars.length; i++) {
+			game.global.stars[i].move();
+		}
 		for (var i = 0; i < game.global.entities.length; i++) {
 			game.global.entities[i].move();
+		}
+	};
+
+	game.remove = function () {
+		var entity;
+		for (var i = game.global.stars.length-1; i >= 0; i--) {
+			entity = game.global.stars[i];
+			if (entity.pos[0] > game.global.windowWidth + 100 ||
+				entity.pos[0] < -100 ||
+				entity.pos[1] > game.global.windowHeight + 100 ||
+				entity.pos[1] < -100
+			) {
+				game.global.stars.splice(i,1);
+			}
+		}
+		for (var i = game.global.entities.length-1; i >= 0; i--) {
+			entity = game.global.entities[i];
+			if (entity.pos[0] > game.global.windowWidth + 100 ||
+				entity.pos[0] < -100 ||
+				entity.pos[1] > game.global.windowHeight + 100 ||
+				entity.pos[1] < -100
+			) {
+				game.global.entities.splice(i,1);
+			}
 		}
 	};
 	
@@ -37,6 +72,9 @@ angular.module('app').controller('gameController', function ($scope, $log, $time
 		context.rect(0, 0, game.global.windowWidth, game.global.windowHeight);
 		context.fillStyle = game.global.colors.background;
 		context.fill();
+		for (var i = 0; i < game.global.stars.length; i++) {
+			game.global.stars[i].draw(context);
+		}
 		for (var i = 0; i < game.global.entities.length; i++) {
 			game.global.entities[i].draw(context);
 		}
@@ -52,7 +90,7 @@ angular.module('app').controller('gameController', function ($scope, $log, $time
 			}
 		};
 		this.move = function () {
-			pos = movement.nextPos(pos);
+			this.pos = movement.nextPos(this.pos);
 		};
 	};
 
@@ -81,20 +119,25 @@ angular.module('app').controller('gameController', function ($scope, $log, $time
 	};
 
 	game.createStar = function () {
-		var pos = [500,500];
-		var body = new game.part([0,-20],game.global.utils.scale(game.global.parts.star1,3,3),game.global.colors.star1);
-		var movement = new game.movement();
-		return new game.entity(pos, [body], movement);
+		var size = (2.5 * Math.random());
+		var initPos = [game.global.windowWidth+10,Math.random()*game.global.windowHeight];
+		var body = new game.part([0,-20],game.global.utils.scale(game.global.parts.star1,size,size),game.global.colors.star1);
+		var movement = {nextPos: function (pos) {
+			return [pos[0]-(0.3*size),pos[1]];
+		}};
+		return new game.entity(initPos, [body], movement);
 	};
 	
 	//Keeps track of global game stuff.
 	game.global = {
-		tps: 20,
+		tps: 50,
 		nextTick: undefined,
 		colors: gameFactory.colors,
 		parts: gameFactory.parts,
 		utils: gameFactory.utils,
-		entities: []
+		entities: [],
+		stars: [],
+		starDensity: 0.04
 	};
 	
 	/**
@@ -109,7 +152,6 @@ angular.module('app').controller('gameController', function ($scope, $log, $time
 			new game.part([0,30],game.global.utils.mirrorX(game.global.parts.gun1),game.global.colors.ship2),
 			new game.part([-50,-30],game.global.parts.body1,game.global.colors.ship1)
 		],new game.movement()));
-		game.global.entities.push(game.createStar());
 		game.drawLoop();
 		game.tickLoop();
 	};

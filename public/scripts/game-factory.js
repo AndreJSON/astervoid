@@ -11,7 +11,7 @@ angular.module('app').factory('gameFactory', function () {
 			ship1: "rgba(140,150,160,1)",
 			ship2: "rgba(140,130,130,1)",
 			ship3: "rgba(100,90,90,1)",
-			star1: "rgba(255,255,255,0.8)"
+			star1: "rgba(255,255,255,0.85)"
 		},
 		utils: {
 			mirrorX: function (points) {
