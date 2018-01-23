@@ -1,6 +1,6 @@
 /*global angular, requestAnimationFrame*/
 
-angular.module('app').controller('gameController', function ($scope, $log, $timeout, $window, gameFactory) {
+angular.module('app').controller('gameController', function ($scope, $log, $timeout, $window, gameFactory, classFactory) {
 	'use strict';
 	var game = {};
 
@@ -80,44 +80,6 @@ angular.module('app').controller('gameController', function ($scope, $log, $time
 		}
 	};
 
-	game.entity = function (pos,parts,movement) {
-		this.pos = pos;
-		this.parts = parts;
-		this.movement = movement;
-		this.draw = function (context) {
-			for (var i = 0; i < this.parts.length; i++) {
-				this.parts[i].draw(context, this.pos[0], this.pos[1]);
-			}
-		};
-		this.move = function () {
-			this.pos = movement.nextPos(this.pos);
-		};
-	};
-
-	game.part = function (pos,points,color) {
-		this.pos = pos;
-		this.points = points;
-		this.color = color;
-		this.draw = function (context,x,y) {
-			x += this.pos[0];
-			y += this.pos[1];
-			context.beginPath();
-			context.moveTo(x,y);
-			for (var i = 0; i < this.points.length; i++) {
-				context.lineTo(x+this.points[i][0],y+this.points[i][1]);
-			}
-			context.closePath();
-			context.fillStyle = this.color;
-			context.fill();
-		};
-	};
-
-	game.movement = function() {
-		this.nextPos = function(pos) {
-			return pos;
-		};
-	};
-
 	game.createStar = function () {
 		var size = (2.5 * Math.random());
 		var initPos = [game.global.windowWidth+10,Math.random()*game.global.windowHeight];
@@ -125,7 +87,7 @@ angular.module('app').controller('gameController', function ($scope, $log, $time
 		var movement = {nextPos: function (pos) {
 			return [pos[0]-(0.3*size),pos[1]];
 		}};
-		return new game.entity(initPos, [body], movement);
+		return new game.entity(initPos, undefined, [body], undefined, movement);
 	};
 	
 	//Keeps track of global game stuff.
@@ -144,16 +106,28 @@ angular.module('app').controller('gameController', function ($scope, $log, $time
 	 * Should be called to initialize the game.
 	 */
 	game.init = function () {
+		game.entity = classFactory.entity;
+		game.part = classFactory.part;
+		game.movement = classFactory.movement;
 		game.global.nextTick = Date.now();
-		game.global.entities.push(new game.entity([90,420],[
-			new game.part([-60,-28],game.global.parts.throttle1,game.global.colors.fire1),
-			new game.part([-60,8],game.global.parts.throttle1,game.global.colors.fire1),
-			new game.part([-50,-10],game.global.parts.nozzle1,game.global.colors.ship3),
-			new game.part([-50, 26],game.global.parts.nozzle1,game.global.colors.ship3),
-			new game.part([0,-30],game.global.parts.gun1,game.global.colors.ship2),
-			new game.part([0,30],game.global.utils.mirrorX(game.global.parts.gun1),game.global.colors.ship2),
-			new game.part([-50,-30],game.global.parts.body1,game.global.colors.ship1)
-		],new game.movement()));
+		game.global.entities.push(new game.entity([90,420],
+			{
+				bhp: 10,
+				mhp: 10,
+				chp: 10
+			},
+			[
+				new game.part([-60,-28],game.global.parts.throttle1,game.global.colors.fire1),
+				new game.part([-60,8],game.global.parts.throttle1,game.global.colors.fire1),
+				new game.part([-50,-10],game.global.parts.nozzle1,game.global.colors.ship3),
+				new game.part([-50, 26],game.global.parts.nozzle1,game.global.colors.ship3),
+				new game.part([0,-30],game.global.parts.gun1,game.global.colors.ship2),
+				new game.part([0,30],game.global.utils.mirrorX(game.global.parts.gun1),game.global.colors.ship2),
+				new game.part([-50,-30],game.global.parts.body1,game.global.colors.ship1)
+			],
+			undefined,
+			new game.movement()
+		));
 		game.drawLoop();
 		game.tickLoop();
 	};
