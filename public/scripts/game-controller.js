@@ -146,6 +146,8 @@ angular.module('app').controller('gameController', function ($scope, $log, $time
 	game.init = function () {
 		game.global.nextTick = Date.now();
 		game.global.entities.push(new game.entity([90,420],[
+			new game.part([-60,-28],game.global.parts.throttle1,game.global.colors.fire1),
+			new game.part([-60,8],game.global.parts.throttle1,game.global.colors.fire1),
 			new game.part([-50,-10],game.global.parts.nozzle1,game.global.colors.ship3),
 			new game.part([-50, 26],game.global.parts.nozzle1,game.global.colors.ship3),
 			new game.part([0,-30],game.global.parts.gun1,game.global.colors.ship2),
