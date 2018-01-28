@@ -37,7 +37,7 @@ angular.module('app').factory('utilityFactory', function (classFactory, constFac
 		createStar: function () {
 			var size = (2.5 * Math.random());
 			var initPos = [1500+10,Math.random()*890];
-			var body = new classes.part([0,-20],data.scale(consts.parts.star1,size,size),consts.colors.star1);
+			var body = new classes.part([0,-20],data.scale(consts.parts.star1,size,size),Math.random() > 0.5? consts.colors.star1 : consts.colors.star2);
 			var movement = {nextPos: function (pos) {
 				return [pos[0]-(0.3*size),pos[1]];
 			}};

@@ -15,7 +15,8 @@ angular.module('app').factory('constFactory', function () {
 			ship2: "rgba(140,130,130,1)",
 			ship3: "rgba(100,90,90,1)",
 			fire1: "rgba(255,120,0,1)",
-			star1: "rgba(255,255,255,0.85)",
+			star1: "rgba(255,255,255,0.81)",
+			star2: "rgba(255,255,255,0.93)",
 			bar1:  "rgba(60,60,60,1)"
 		},
 		stats: {
