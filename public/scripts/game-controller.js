@@ -1,6 +1,6 @@
 /*global angular, requestAnimationFrame*/
 
-angular.module('app').controller('gameController', function ($scope, $log, $timeout, $window, gameFactory, classFactory) {
+angular.module('app').controller('gameController', function ($scope, $log, $timeout, $window, classFactory, constFactory, utilityFactory) {
 	'use strict';
 	var game = {};
 
@@ -105,7 +105,6 @@ angular.module('app').controller('gameController', function ($scope, $log, $time
 		context.fillText("crit chance",430,48);
 		context.fillText("crit damage",430,76);
 
-		
 		context.strokeStyle = game.global.colors.star1;
 		context.strokeRect(1358,47,120,24);
 		context.fillStyle = "rgba(140,0,0,1)";
@@ -120,26 +119,15 @@ angular.module('app').controller('gameController', function ($scope, $log, $time
 		context.fillText("crit chance",1140,48);
 		context.fillText("crit damage",1140,76);
 	};
-
-	/*game.createStar = function () {
-		var size = (2.5 * Math.random());
-		var initPos = [1500+10,Math.random()*890];
-		var body = new game.part([0,-20],game.utils.scale(game.global.parts.star1,size,size),game.global.colors.star1);
-		var movement = {nextPos: function (pos) {
-			return [pos[0]-(0.3*size),pos[1]];
-		}};
-		return new game.entity(initPos, undefined, [body], undefined, movement);
-	};*/
 	
 	//Keeps track of global game stuff.
 	game.global = {
 		tps: 50,
 		nextTick: undefined,
-		colors: gameFactory.colors,
-		parts: gameFactory.parts,
+		starDensity: 0.04,
+		colors: constFactory.colors,
 		entities: [],
-		stars: [],
-		starDensity: 0.04
+		stars: []
 	};
 	
 	/**
@@ -149,7 +137,7 @@ angular.module('app').controller('gameController', function ($scope, $log, $time
 		game.entity = classFactory.entity;
 		game.part = classFactory.part;
 		game.movement = classFactory.movement;
-		game.utils = gameFactory.utils;
+		game.utils = utilityFactory;
 		game.global.nextTick = Date.now();
 		game.global.entities.push(game.utils.entityBuilder.player());
 		game.global.entities.push(game.utils.entityBuilder.enemy1());

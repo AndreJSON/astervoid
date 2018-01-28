@@ -1,5 +1,6 @@
 angular.module('app').factory('classFactory', function () {
-	var data = {
+	var data = {};
+	data = {
 		entity: function (pos,stats,parts,modules,movement) {
 			this.pos = pos;
 			this.stats = stats;
