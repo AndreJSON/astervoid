@@ -12,53 +12,6 @@ angular.module('app').factory('gameFactory', function (classFactory) {
 			star1: [[0,0],[1,2],[3,3],[1,4],[0,6],[-1,4],[-3,3],[-1,2],[0,0]],
 			throttle1: [[0,0], [0,20], [-0.9,20], [-0.9,0], [0,0]]
 		},
-		entityBuilder: {
-			player: function () {
-				return new entity(
-					[90,420],
-					{
-						bhp: 10,
-						mhp: 10,
-						chp: 10
-					},
-					[
-						new part([-60,-28],data.parts.throttle1,data.colors.fire1),
-						new part([-60,8],data.parts.throttle1,data.colors.fire1),
-						new part([-50,-10],data.parts.nozzle1,data.colors.ship3),
-						new part([-50, 26],data.parts.nozzle1,data.colors.ship3),
-						new part([0,-30],data.parts.gun1,data.colors.ship2),
-						new part([0,30],data.utils.mirrorX(data.parts.gun1),data.colors.ship2),
-						new part([-50,-30],data.parts.body1,data.colors.ship1)
-					],
-					undefined,
-					new movement()
-				);
-			},
-			enemy1: function () {
-				return new entity(
-					[1600,420],
-					{
-						bhp: 3,
-						mhp: 3,
-						chp: 3
-					},
-					[
-						new part([15,-12],data.utils.mirrorY(data.parts.gun1),data.colors.ship2),
-						new part([15,12],data.utils.mirrorX(data.utils.mirrorY(data.parts.gun1)),data.colors.ship2),
-						new part([-50,0],data.utils.mirrorY(data.parts.body2),data.colors.ship3)
-					],
-					undefined,
-					{nextPos: function (pos)
-						{
-							if (pos[0] > 1400)
-								return [pos[0]-3,pos[1]]
-							else
-								return [pos[0],pos[1]];
-						}
-					}
-				);
-			}
-		},
 		colors: {
 			background: "rgba(30,30,30,1)",
 			ship1: "rgba(140,150,160,1)",
@@ -99,6 +52,70 @@ angular.module('app').factory('gameFactory', function (classFactory) {
 				context.closePath();
 				context.fillStyle = color;
 				context.fill();
+			},
+			createStar: function () {
+				var size = (2.5 * Math.random());
+				var initPos = [1500+10,Math.random()*890];
+				var body = new part([0,-20],data.utils.scale(data.parts.star1,size,size),data.colors.star1);
+				var movement = {nextPos: function (pos) {
+					return [pos[0]-(0.3*size),pos[1]];
+				}};
+				return new entity(initPos, undefined, [body], undefined, movement);
+			},
+			entityBuilder: {
+				player: function () {
+					return new entity(
+						[90,420],
+						{
+							bhp: 10,
+							bd: 1,
+							brs: 0,
+							brp: 1,
+							ba: 1,
+							bcc: 0.01,
+							bcd: 2
+						},
+						[
+							new part([-60,-28],data.parts.throttle1,data.colors.fire1),
+							new part([-60,8],data.parts.throttle1,data.colors.fire1),
+							new part([-50,-10],data.parts.nozzle1,data.colors.ship3),
+							new part([-50, 26],data.parts.nozzle1,data.colors.ship3),
+							new part([0,-30],data.parts.gun1,data.colors.ship2),
+							new part([0,30],data.utils.mirrorX(data.parts.gun1),data.colors.ship2),
+							new part([-50,-30],data.parts.body1,data.colors.ship1)
+						],
+						undefined,
+						new movement()
+					);
+				},
+				enemy1: function () {
+					return new entity(
+						[1600,420],
+						{
+							bhp: 5,
+							bd: 1,
+							brs: 0,
+							brp: 0,
+							ba: 0.25,
+							bcc: 0.00,
+							bcd: 2
+						},
+						[
+							new part([15,-12],data.utils.mirrorY(data.parts.gun1),data.colors.ship2),
+							new part([15,12],data.utils.mirrorX(data.utils.mirrorY(data.parts.gun1)),data.colors.ship2),
+							new part([-50,0],data.utils.mirrorY(data.parts.body2),data.colors.ship3)
+						],
+						undefined,
+						{nextPos: function (pos)
+							{
+								if (pos[0] > 1400)
+									return [pos[0]-3,pos[1]]
+								else
+									return [pos[0],pos[1]];
+							}
+						}
+					);
+				}
 			}
 		}
 	}

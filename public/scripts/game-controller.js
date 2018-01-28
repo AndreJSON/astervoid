@@ -27,7 +27,7 @@ angular.module('app').controller('gameController', function ($scope, $log, $time
 		game.move();
 		game.remove();
 		if (Math.random() < game.global.starDensity) {
-			game.global.stars.push(game.createStar());
+			game.global.stars.push(game.utils.createStar());
 		}
 	};
 
@@ -46,7 +46,7 @@ angular.module('app').controller('gameController', function ($scope, $log, $time
 			entity = game.global.stars[i];
 			if (entity.pos[0] > 1500 + 100 ||
 				entity.pos[0] < -100 ||
-				entity.pos[1] > game.global.windowHeight + 100 ||
+				entity.pos[1] > 890 + 100 ||
 				entity.pos[1] < -100
 			) {
 				game.global.stars.splice(i,1);
@@ -56,7 +56,7 @@ angular.module('app').controller('gameController', function ($scope, $log, $time
 			entity = game.global.entities[i];
 			if (entity.pos[0] > 1500 + 100 ||
 				entity.pos[0] < -100 ||
-				entity.pos[1] > game.global.windowHeight + 100 ||
+				entity.pos[1] > 890 + 100 ||
 				entity.pos[1] < -100
 			) {
 				game.global.entities.splice(i,1);
@@ -69,7 +69,7 @@ angular.module('app').controller('gameController', function ($scope, $log, $time
 	 */
 	game.draw = function (context) {
 		context.beginPath();
-		context.rect(0, 0, 1500, game.global.windowHeight);
+		context.rect(0, 0, 1500, 890);
 		context.fillStyle = game.global.colors.background;
 		context.fill();
 		for (var i = 0; i < game.global.stars.length; i++) {
@@ -99,22 +99,37 @@ angular.module('app').controller('gameController', function ($scope, $log, $time
 		context.font = "bold 18px Arial";
 		context.fillText("10/10",60,38);
 		context.fillText("damage",160,20);
-		context.fillText("att. speed",160,48);
-		context.fillText("resistance",160,76);
-		context.fillText("crit chance",400,20);
-		context.fillText("crit damage",400,48);
-		context.fillText("regeneration",400,76);
+		context.fillText("resistance",160,48);
+		context.fillText("reparation",160,76);
+		context.fillText("att. speed",430,20);
+		context.fillText("crit chance",430,48);
+		context.fillText("crit damage",430,76);
+
+		
+		context.strokeStyle = game.global.colors.star1;
+		context.strokeRect(1358,47,120,24);
+		context.fillStyle = "rgba(140,0,0,1)";
+		context.fillRect(1359,48,118*(game.global.entities[1].stats.chp/game.global.entities[1].stats.mhp),22);
+		context.fillStyle = game.global.colors.star1;
+		context.font = "bold 18px Arial";
+		context.fillText("10/10",1398,38);
+		context.fillText("damage",870,20);
+		context.fillText("resistance",870,48);
+		context.fillText("reparation",870,76);
+		context.fillText("att. speed",1140,20);
+		context.fillText("crit chance",1140,48);
+		context.fillText("crit damage",1140,76);
 	};
 
-	game.createStar = function () {
+	/*game.createStar = function () {
 		var size = (2.5 * Math.random());
-		var initPos = [1500+10,Math.random()*game.global.windowHeight];
+		var initPos = [1500+10,Math.random()*890];
 		var body = new game.part([0,-20],game.utils.scale(game.global.parts.star1,size,size),game.global.colors.star1);
 		var movement = {nextPos: function (pos) {
 			return [pos[0]-(0.3*size),pos[1]];
 		}};
 		return new game.entity(initPos, undefined, [body], undefined, movement);
-	};
+	};*/
 	
 	//Keeps track of global game stuff.
 	game.global = {
@@ -122,7 +137,6 @@ angular.module('app').controller('gameController', function ($scope, $log, $time
 		nextTick: undefined,
 		colors: gameFactory.colors,
 		parts: gameFactory.parts,
-		entityBuilder: gameFactory.entityBuilder,
 		entities: [],
 		stars: [],
 		starDensity: 0.04
@@ -137,8 +151,8 @@ angular.module('app').controller('gameController', function ($scope, $log, $time
 		game.movement = classFactory.movement;
 		game.utils = gameFactory.utils;
 		game.global.nextTick = Date.now();
-		game.global.entities.push(game.global.entityBuilder.player());
-		game.global.entities.push(game.global.entityBuilder.enemy1());
+		game.global.entities.push(game.utils.entityBuilder.player());
+		game.global.entities.push(game.utils.entityBuilder.enemy1());
 		game.drawLoop();
 		game.tickLoop();
 	};
