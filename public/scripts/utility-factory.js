@@ -43,19 +43,21 @@ angular.module('app').factory('utilityFactory', function (classFactory, constFac
 			}};
 			return new classes.entity(initPos, undefined, [body], undefined, movement);
 		},
+		updateStats: function (stats) {
+			stats.mhp = stats.bhp;
+			stats.chp = stats.mhp;
+			stats.md = stats.bd;
+			stats.mrs = stats.brs;
+			stats.mrp = stats.brp;
+			stats.ma = stats.ba;
+			stats.mcc = stats.bcc;
+			stats.mcd = stats.bcd;
+		},
 		entityBuilder: {
-			player: function () {
+			player: function (pos) {
 				return new classes.entity(
-					[90,420],
-					{
-						bhp: 10,
-						bd: 1,
-						brs: 0,
-						brp: 1,
-						ba: 1,
-						bcc: 0.01,
-						bcd: 2
-					},
+					pos,
+					Object.assign({},consts.stats.player),
 					[
 						new classes.part([-60,-28],consts.parts.throttle1,consts.colors.fire1),
 						new classes.part([-60,8],consts.parts.throttle1,consts.colors.fire1),
@@ -69,30 +71,33 @@ angular.module('app').factory('utilityFactory', function (classFactory, constFac
 					new classes.movement()
 				);
 			},
-			enemy1: function () {
+			enemy: function (pos) {
 				return new classes.entity(
-					[1600,420],
-					{
-						bhp: 5,
-						bd: 1,
-						brs: 0,
-						brp: 0,
-						ba: 0.25,
-						bcc: 0.00,
-						bcd: 2
-					},
+					[pos[0]+200,pos[1]],
+					(function () {
+						var stats = Object.assign({},consts.stats.enemy1);
+						stats.mhp = stats.bhp;
+						stats.chp = stats.mhp;
+						stats.md = stats.bd;
+						stats.mrs = stats.brs;
+						stats.mrp = stats.brp;
+						stats.ma = stats.ba;
+						stats.mcc = stats.bcc;
+						stats.mcd = stats.bcd;
+						return stats;
+					})(),
 					[
 						new classes.part([15,-12],data.mirrorY(consts.parts.gun1),consts.colors.ship2),
 						new classes.part([15,12],data.mirrorX(data.mirrorY(consts.parts.gun1)),consts.colors.ship2),
 						new classes.part([-50,0],data.mirrorY(consts.parts.body2),consts.colors.ship3)
 					],
 					undefined,
-					{nextPos: function (pos)
+					{nextPos: function (cPos)
 						{
-							if (pos[0] > 1400)
-								return [pos[0]-3,pos[1]]
+							if (cPos[0] > pos[0])
+								return [cPos[0]-3,cPos[1]]
 							else
-								return [pos[0],pos[1]];
+								return [cPos[0],cPos[1]];
 						}
 					}
 				);

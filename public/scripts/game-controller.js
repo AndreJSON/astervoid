@@ -24,6 +24,7 @@ angular.module('app').controller('gameController', function ($scope, $log, $time
 	};
 
 	game.tick = function () {
+		game.utils.updateStats(game.global.entities[0].stats);
 		game.move();
 		game.remove();
 		if (Math.random() < game.global.starDensity) {
@@ -139,8 +140,8 @@ angular.module('app').controller('gameController', function ($scope, $log, $time
 		game.movement = classFactory.movement;
 		game.utils = utilityFactory;
 		game.global.nextTick = Date.now();
-		game.global.entities.push(game.utils.entityBuilder.player());
-		game.global.entities.push(game.utils.entityBuilder.enemy1());
+		game.global.entities.push(game.utils.entityBuilder.player([90,420]));
+		game.global.entities.push(game.utils.entityBuilder.enemy([1400,420]));
 		game.drawLoop();
 		game.tickLoop();
 	};

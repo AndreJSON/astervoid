@@ -17,6 +17,26 @@ angular.module('app').factory('constFactory', function () {
 			fire1: "rgba(255,120,0,1)",
 			star1: "rgba(255,255,255,0.85)",
 			bar1:  "rgba(60,60,60,1)"
+		},
+		stats: {
+			player: {
+				bhp: 10,
+				bd: 1,
+				brs: 0,
+				brp: 1,
+				ba: 1,
+				bcc: 0.01,
+				bcd: 2
+			},
+			enemy1: {
+				bhp: 5,
+				bd: 1,
+				brs: 0,
+				brp: 0,
+				ba: 0.25,
+				bcc: 0.00,
+				bcd: 2
+			}
 		}
 	};
 	return data;
