@@ -22,19 +22,21 @@ angular.module('app').factory('constFactory', function () {
 		stats: {
 			player: {
 				bhp: 10,
-				bd: 1,
+				bad: 1,
 				brs: 0,
 				brp: 1,
-				ba: 1,
+				bas: 1,
+				bac: 0.95,
 				bcc: 0.01,
 				bcd: 2
 			},
 			enemy1: {
 				bhp: 5,
-				bd: 1,
+				bad: 1,
 				brs: 0,
 				brp: 0,
-				ba: 0.25,
+				bas: 0.25,
+				bac: 0.95,
 				bcc: 0.00,
 				bcd: 2
 			}

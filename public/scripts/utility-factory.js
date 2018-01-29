@@ -46,10 +46,11 @@ angular.module('app').factory('utilityFactory', function (classFactory, constFac
 		updateStats: function (stats) {
 			stats.mhp = stats.bhp;
 			stats.chp = stats.mhp;
-			stats.md = stats.bd;
+			stats.mad = stats.bad;
 			stats.mrs = stats.brs;
 			stats.mrp = stats.brp;
-			stats.ma = stats.ba;
+			stats.mas = stats.bas;
+			stats.mac = stats.bac;
 			stats.mcc = stats.bcc;
 			stats.mcd = stats.bcd;
 		},
@@ -78,10 +79,11 @@ angular.module('app').factory('utilityFactory', function (classFactory, constFac
 						var stats = Object.assign({},consts.stats.enemy1);
 						stats.mhp = stats.bhp;
 						stats.chp = stats.mhp;
-						stats.md = stats.bd;
+						stats.mad = stats.bad;
 						stats.mrs = stats.brs;
 						stats.mrp = stats.brp;
-						stats.ma = stats.ba;
+						stats.mas = stats.bas;
+						stats.mac = stats.bac;
 						stats.mcc = stats.bcc;
 						stats.mcd = stats.bcd;
 						return stats;
