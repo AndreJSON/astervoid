@@ -141,7 +141,7 @@ angular.module('app').controller('gameController', function ($scope, $log, $time
 	
 	//Keeps track of global game stuff.
 	game.global = {
-		tps: 60,
+		tps: constFactory.tps,
 		nextTick: undefined,
 		starDensity: 0.04,
 		colors: constFactory.colors,

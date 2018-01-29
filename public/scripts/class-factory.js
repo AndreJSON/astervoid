@@ -9,7 +9,7 @@ angular.module('app').factory('classFactory', function () {
 			this.shooter = shooter;
 			this.movement = movement;
 			this.shoot = function () {
-				return shooter.shoot();
+				return shooter.shoot(this.stats.mas);
 			};
 			this.move = function () {
 				this.pos = movement.nextPos(this.pos);

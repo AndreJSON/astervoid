@@ -60,9 +60,15 @@ angular.module('app').factory('utilityFactory', function (classFactory, constFac
 				{
 					muzzles: [[138,396],[138,474]],
 					prevMuzzle: 0,
-					shoot: function () {
-						this.prevMuzzle = (this.prevMuzzle+1)%this.muzzles.length;
-						return data.createBullet(this.muzzles[this.prevMuzzle]);
+					accumulator: 0,
+					shoot: function (as) {
+						this.accumulator += as/consts.tps;
+						if (this.accumulator > 1) {
+							this.accumulator -= 1;
+							this.prevMuzzle = (this.prevMuzzle+1)%this.muzzles.length;
+							return data.createBullet(this.muzzles[this.prevMuzzle]);
+						}
+						return undefined;
 					}
 				},
 				new classes.movement()

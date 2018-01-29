@@ -1,6 +1,7 @@
 angular.module('app').factory('constFactory', function () {
 	var data = {};
 	data = {
+		tps: 60,
 		parts: {
 			gun1: [[0,0], [0,-3], [-10,-3], [-10,-15], [45,-15], [45,-3], [25,-3], [25,0], [0,0]],
 			nozzle1: [[0,0], [-10,4], [-10,-20], [0,-16], [0,0]],
