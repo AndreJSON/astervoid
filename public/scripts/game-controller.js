@@ -27,6 +27,12 @@ angular.module('app').controller('gameController', function ($scope, $log, $time
 		game.utils.updateStats(game.global.entities[0].stats);
 		game.move();
 		game.remove();
+		for (var i = 0; i < game.global.entities.length; i++) {
+			var bullets = game.global.entities[i].shoot();
+			if (bullets !== undefined) {
+				game.global.entities = game.global.entities.concat(bullets);
+			}
+		}
 		if (Math.random() < game.global.starDensity) {
 			game.global.stars.push(game.utils.createStar());
 		}
@@ -135,7 +141,7 @@ angular.module('app').controller('gameController', function ($scope, $log, $time
 	
 	//Keeps track of global game stuff.
 	game.global = {
-		tps: 50,
+		tps: 60,
 		nextTick: undefined,
 		starDensity: 0.04,
 		colors: constFactory.colors,
@@ -152,8 +158,8 @@ angular.module('app').controller('gameController', function ($scope, $log, $time
 		game.movement = classFactory.movement;
 		game.utils = utilityFactory;
 		game.global.nextTick = Date.now();
-		game.global.entities.push(game.utils.entityBuilder.player([90,440]));
-		game.global.entities.push(game.utils.entityBuilder.enemy([1400,440]));
+		game.global.entities.push(game.utils.createPlayer([90,440]));
+		game.global.entities.push(game.utils.createEnemy([1400,440]));
 		game.drawLoop();
 		game.tickLoop();
 	};

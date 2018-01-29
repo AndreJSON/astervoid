@@ -1,19 +1,23 @@
 angular.module('app').factory('classFactory', function () {
 	var data = {};
 	data = {
-		entity: function (pos,stats,parts,modules,movement) {
+		entity: function (pos,stats,parts,modules,shooter,movement) {
 			this.pos = pos;
 			this.stats = stats;
 			this.parts = parts;
 			this.modules = modules;
+			this.shooter = shooter;
 			this.movement = movement;
+			this.shoot = function () {
+				return shooter.shoot();
+			};
+			this.move = function () {
+				this.pos = movement.nextPos(this.pos);
+			};
 			this.draw = function (context) {
 				for (var i = 0; i < this.parts.length; i++) {
 					this.parts[i].draw(context, this.pos[0], this.pos[1]);
 				}
-			};
-			this.move = function () {
-				this.pos = movement.nextPos(this.pos);
 			};
 		},
 		part: function (pos,points,color) {
@@ -33,7 +37,10 @@ angular.module('app').factory('classFactory', function () {
 				context.fill();
 			};
 		},
-		movement: function() {
+		shooter: function () {
+			this.shoot = function() {} // Does nothing per default.
+		},
+		movement: function () {
 			this.nextPos = function(pos) {
 				return pos;
 			};
