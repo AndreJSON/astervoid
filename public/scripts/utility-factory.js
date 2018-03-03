@@ -61,12 +61,12 @@ angular.module('app').factory('utilityFactory', function (classFactory, constFac
 					muzzles: [[138,396],[138,474]],
 					prevMuzzle: 0,
 					accumulator: 0,
-					shoot: function (as) {
+					shoot: function (as, ac, ad) {
 						this.accumulator += as/consts.tps;
 						if (this.accumulator > 1) {
 							this.accumulator -= 1;
 							this.prevMuzzle = (this.prevMuzzle+1)%this.muzzles.length;
-							return data.createBullet(this.muzzles[this.prevMuzzle]);
+							return data.createBullet(this.muzzles[this.prevMuzzle], [1440,440], ac, ad);
 						}
 						return undefined;
 					}
@@ -107,7 +107,8 @@ angular.module('app').factory('utilityFactory', function (classFactory, constFac
 				}
 			);
 		},
-		createBullet: function (startPos, targetPos, damage) {
+		//Used by both sides.
+		createBullet: function (startPos, targetPos, accuracy, damage) {
 			return new classes.entity(
 				startPos,
 				{damage: damage},
@@ -115,7 +116,7 @@ angular.module('app').factory('utilityFactory', function (classFactory, constFac
 				undefined,
 				new classes.shooter(),
 				{
-					vel: [5,0],
+					vel: [Math.cos(Math.PI/3*(1-accuracy)*(Math.random()-Math.random())+Math.atan((targetPos[1]-startPos[1])/(targetPos[0]-startPos[0])))*5,Math.sin(Math.PI/3*(1-accuracy)*(Math.random()-Math.random())+Math.atan((targetPos[1]-startPos[1])/(targetPos[0]-startPos[0])))*5],
 					nextPos: function (pos) {
 						return [pos[0] + this.vel[0], pos[1] + this.vel[1]];
 					}

@@ -28,14 +28,14 @@ angular.module('app').factory('constFactory', function () {
 		},
 		stats: {
 			player: {
-				bhp: 10,
-				bad: 1,
-				brs: 0,
-				brp: 1,
-				bas: 1,
-				bac: 0.95,
-				bcc: 0.01,
-				bcd: 2
+				bhp: 10,	//Base hitpoints.
+				bad: 1,		//Base attack damage.
+				brs: 0,		//Base resistance.
+				brp: 1,		//Base reparation.
+				bas: 1,		//Base attack speed.
+				bac: 0.95,	//Base accuracy.
+				bcc: 0.01,	//Base crit chance.
+				bcd: 2		//Base crit damage multiplier.
 			},
 			enemy1: {
 				bhp: 5,
