@@ -61,12 +61,12 @@ angular.module('app').factory('utilityFactory', function (classFactory, constFac
 					muzzles: [[138,396],[138,474]],
 					prevMuzzle: 0,
 					accumulator: 0,
-					shoot: function (as, ac, ad) {
+					shoot: function (as, ac, ad, cc, cd) {
 						this.accumulator += as/consts.tps;
 						if (this.accumulator > 1) {
 							this.accumulator -= 1;
 							this.prevMuzzle = (this.prevMuzzle+1)%this.muzzles.length;
-							return data.createBullet(this.muzzles[this.prevMuzzle], [1440,440], ac, ad);
+							return data.createBullet(this.muzzles[this.prevMuzzle], [1440,440], ac, ad, cc, cd);
 						}
 						return undefined;
 					}
@@ -96,7 +96,21 @@ angular.module('app').factory('utilityFactory', function (classFactory, constFac
 					new classes.part([-50,0],data.mirrorY(consts.parts.body2),consts.colors.ship3)
 				],
 				undefined,
-				new classes.shooter(),
+				{
+					muzzles: [[1400,414],[1400,456]],
+					prevMuzzle: 0,
+					accumulator: 0,
+					shoot: function (as, ac, ad, cc, cd) {
+						console.log("hello");
+						this.accumulator += as/consts.tps;
+						if (this.accumulator > 1) {
+							this.accumulator -= 1;
+							this.prevMuzzle = (this.prevMuzzle+1)%this.muzzles.length;
+							return data.createBullet(this.muzzles[this.prevMuzzle], [90,440], ac, ad, cc, cd);
+						}
+						return undefined;
+					}
+				},
 				{
 					nextPos: function (cPos) {
 						if (cPos[0] > pos[0])
@@ -108,15 +122,19 @@ angular.module('app').factory('utilityFactory', function (classFactory, constFac
 			);
 		},
 		//Used by both sides.
-		createBullet: function (startPos, targetPos, accuracy, damage) {
+		createBullet: function (startPos, targetPos, accuracy, damage, critChance, critDamage) {
+			var squares = startPos[0] < targetPos[0]; //If squares are shooting, this will be true.
+			var crit = Math.random() < critChance;
+			var bulletPart = squares? consts.parts.bullet1 : data.mirrorY(consts.parts.bullet2);
+			var bulletColor = squares? (crit? consts.colors.bulletcrit1 : consts.colors.bullet1) : (crit? consts.colors.bulletcrit2 : consts.colors.bullet2);
 			return new classes.entity(
 				startPos,
-				{damage: damage},
-				[new classes.part([-3,-1], consts.parts.bullet1, consts.colors.bullet1)],
+				{damage: (crit? critDamage:1) * damage},
+				[new classes.part([-3,-1], bulletPart, bulletColor)],
 				undefined,
 				new classes.shooter(),
 				{
-					vel: [Math.cos(Math.PI/3*(1-accuracy)*(Math.random()-Math.random())+Math.atan((targetPos[1]-startPos[1])/(targetPos[0]-startPos[0])))*5,Math.sin(Math.PI/3*(1-accuracy)*(Math.random()-Math.random())+Math.atan((targetPos[1]-startPos[1])/(targetPos[0]-startPos[0])))*5],
+					vel: [(squares? 1:-1)*Math.cos(Math.PI/3*(1-accuracy)*(Math.random()-Math.random())+Math.atan((targetPos[1]-startPos[1])/(targetPos[0]-startPos[0])))*5,(squares? 1:-1) * Math.sin(Math.PI/3*(1-accuracy)*(Math.random()-Math.random())+Math.atan((targetPos[1]-startPos[1])/(targetPos[0]-startPos[0])))*5],
 					nextPos: function (pos) {
 						return [pos[0] + this.vel[0], pos[1] + this.vel[1]];
 					}

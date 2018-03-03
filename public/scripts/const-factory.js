@@ -19,9 +19,9 @@ angular.module('app').factory('constFactory', function () {
 			ship3: "rgba(100,90,90,1)",
 			fire1: "rgba(255,120,0,1)",
 			bullet1: "rgba(120,130,170,1)",
-			bullet2: "rgba(120,130,255,1)",
-			bullet3: "rgba(170,130,120,1)",
-			bullet4: "rgba(255,130,120,1)",
+			bulletcrit1: "rgba(120,130,255,1)",
+			bullet2: "rgba(170,130,120,1)",
+			bulletcrit2: "rgba(255,130,120,1)",
 			star1: "rgba(255,255,255,0.81)",
 			star2: "rgba(255,255,255,0.93)",
 			bar1:  "rgba(60,60,60,1)"
@@ -45,6 +45,16 @@ angular.module('app').factory('constFactory', function () {
 				bas: 0.25,
 				bac: 0.95,
 				bcc: 0.00,
+				bcd: 2
+			},
+			test: {
+				bhp: 5,
+				bad: 1,
+				brs: 0,
+				brp: 0,
+				bas: 4,
+				bac: 1,
+				bcc: 0.5,
 				bcd: 2
 			}
 		}
