@@ -19,6 +19,12 @@ angular.module('app').factory('classFactory', function () {
 					this.parts[i].draw(context, this.pos[0], this.pos[1]);
 				}
 			};
+			this.checkCollision = function (entity) {
+				if (Math.abs(entity.pos[0] - this.pos[0]) > 150) { //Might need to become more complex later.
+					return false;
+				}
+				return true;
+			};
 		},
 		part: function (pos,points,color) {
 			this.pos = pos;

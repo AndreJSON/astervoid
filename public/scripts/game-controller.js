@@ -26,6 +26,7 @@ angular.module('app').controller('gameController', function ($scope, $log, $time
 	game.tick = function () {
 		game.utils.updateStats(game.global.entities[0].stats);
 		game.move();
+		game.checkCollisions();
 		game.remove();
 		for (var i = 0; i < game.global.entities.length; i++) {
 			var bullets = game.global.entities[i].shoot();
@@ -44,6 +45,14 @@ angular.module('app').controller('gameController', function ($scope, $log, $time
 		}
 		for (var i = 0; i < game.global.entities.length; i++) {
 			game.global.entities[i].move();
+		}
+	};
+
+	game.checkCollisions = function () {
+		for (var i = 2; i < game.global.entities.length; i++) {
+			if (game.global.entities[0].checkCollision(game.global.entities[i])) {
+				console.log("Helloo");
+			}
 		}
 	};
 

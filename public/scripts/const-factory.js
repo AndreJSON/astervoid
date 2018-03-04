@@ -32,7 +32,7 @@ angular.module('app').factory('constFactory', function () {
 				bad: 1,		//Base attack damage.
 				brs: 0,		//Base resistance.
 				brp: 1,		//Base reparation.
-				bas: 1,		//Base attack speed.
+				bas: 0.7,	//Base attack speed.
 				bac: 0.95,	//Base accuracy.
 				bcc: 0.01,	//Base crit chance.
 				bcd: 2		//Base crit damage multiplier.

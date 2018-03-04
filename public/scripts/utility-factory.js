@@ -101,7 +101,6 @@ angular.module('app').factory('utilityFactory', function (classFactory, constFac
 					prevMuzzle: 0,
 					accumulator: 0,
 					shoot: function (as, ac, ad, cc, cd) {
-						console.log("hello");
 						this.accumulator += as/consts.tps;
 						if (this.accumulator > 1) {
 							this.accumulator -= 1;
