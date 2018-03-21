@@ -50,9 +50,8 @@ angular.module('app').controller('gameController', function ($scope, $log, $time
 
 	game.checkCollisions = function () {
 		for (var i = 2; i < game.global.entities.length; i++) {
-			if (game.global.entities[0].checkCollision(game.global.entities[i])) {
-				console.log("Helloo");
-			}
+			//game.global.entities[0].checkCollision(game.global.entities[i]);
+			game.global.entities[1].checkCollision(game.global.entities[i]);
 		}
 	};
 
