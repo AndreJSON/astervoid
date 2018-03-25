@@ -115,7 +115,7 @@ angular.module('app').factory('utilityFactory', function (classFactory, constFac
 				{
 					nextPos: function (cPos) {
 						if (cPos[0] > pos[0])
-							return [cPos[0]-3,cPos[1]]
+							return [cPos[0]-(200/consts.tps),cPos[1]]
 						else
 							return [cPos[0],cPos[1]];
 					}
@@ -128,6 +128,7 @@ angular.module('app').factory('utilityFactory', function (classFactory, constFac
 			var crit = Math.random() < critChance;
 			var bulletPart = square? consts.parts.bullet1 : data.mirrorY(consts.parts.bullet2);
 			var bulletColor = square? (crit? consts.colors.bulletcrit1 : consts.colors.bullet1) : (crit? consts.colors.bulletcrit2 : consts.colors.bullet2);
+			var absVel = 300;
 			return new classes.entity(
 				team,
 				startPos,
@@ -136,9 +137,9 @@ angular.module('app').factory('utilityFactory', function (classFactory, constFac
 				undefined,
 				new classes.shooter(),
 				{
-					vel: [(square? 1:-1)*Math.cos(Math.PI/3*(1-accuracy)*(Math.random()-Math.random())+Math.atan((targetPos[1]-startPos[1])/(targetPos[0]-startPos[0])))*5,(square? 1:-1) * Math.sin(Math.PI/3*(1-accuracy)*(Math.random()-Math.random())+Math.atan((targetPos[1]-startPos[1])/(targetPos[0]-startPos[0])))*5],
+					vel: [(square? 1:-1)*Math.cos(Math.PI/3*(1-accuracy)*(Math.random()-Math.random())+Math.atan((targetPos[1]-startPos[1])/(targetPos[0]-startPos[0])))*absVel,(square? 1:-1) * Math.sin(Math.PI/3*(1-accuracy)*(Math.random()-Math.random())+Math.atan((targetPos[1]-startPos[1])/(targetPos[0]-startPos[0])))*absVel],
 					nextPos: function (pos) {
-						return [pos[0] + this.vel[0], pos[1] + this.vel[1]];
+						return [pos[0] + (this.vel[0]/consts.tps), pos[1] + (this.vel[1]/consts.tps)];
 					}
 				}
 			);

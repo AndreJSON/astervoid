@@ -4,7 +4,8 @@ angular.module('app').factory('constFactory', function () {
 		square: 0,
 		triangle: 1,
 		neutral: 2,
-		tps: 60,
+		tps: 60, //How many ticks the game thinks are being used per second. The higher this value is, the smoother the game will be.
+		atps: 60, //How many times tick is actually being called per second. If this is higher than tps, game will be running faster than intended.
 		parts: {
 			gun1: [[0,0], [0,-3], [-10,-3], [-10,-15], [45,-15], [45,-3], [25,-3], [25,0], [0,0]],
 			nozzle1: [[0,0], [-10,4], [-10,-20], [0,-16], [0,0]],

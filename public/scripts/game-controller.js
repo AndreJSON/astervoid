@@ -9,10 +9,11 @@ angular.module('app').controller('gameController', function ($scope, $log, $time
 	 */
 	game.tickLoop = function (count) {
 		if (Date.now() > game.global.nextTick) {
-			game.global.nextTick += (1000 / game.global.tps);
+			game.global.nextTick += (1000 / game.global.atps);
 			game.tick(count);
+			count++;
 		}
-		$timeout(function(){game.tickLoop(count+1);}, 10);
+		$timeout(function(){game.tickLoop(count);}, 10);
 	};
 
 	game.drawLoop = function (count) {
@@ -157,6 +158,7 @@ angular.module('app').controller('gameController', function ($scope, $log, $time
 	//Keeps track of global game stuff.
 	game.global = {
 		tps: constFactory.tps,
+		atps: constFactory.atps,
 		nextTick: undefined,
 		starDensity: 0.04,
 		colors: constFactory.colors,
