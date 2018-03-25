@@ -7,22 +7,25 @@ angular.module('app').controller('gameController', function ($scope, $log, $time
 	/**
 	 * Loops over all functions needed to progress the game.
 	 */
-	game.tickLoop = function () {
+	game.tickLoop = function (count) {
 		if (Date.now() > game.global.nextTick) {
 			game.global.nextTick += (1000 / game.global.tps);
-			game.tick();
+			game.tick(count);
 		}
-		$timeout(game.tickLoop, 10);
+		$timeout(function(){game.tickLoop(count+1);}, 10);
 	};
 
-	game.drawLoop = function () {
+	game.drawLoop = function (count) {
 		game.global.nextFrame = Date.now() + (1000 / game.global.fps);
 		game.draw($scope.ctx);
-		requestAnimationFrame(game.drawLoop);
+		requestAnimationFrame(function(){game.drawLoop(count+1);});
 	};
 
-	game.tick = function () {
-		game.utils.updateStats(game.global.entities[0].stats);
+	game.tick = function (count) {
+		if(count % game.global.tps === 0) {
+			game.utils.updateStats(game.global.entities[0]);
+			game.utils.updateStats(game.global.entities[1]);
+		}
 		game.move();
 		game.checkCollisions();
 		game.remove();
@@ -172,8 +175,8 @@ angular.module('app').controller('gameController', function ($scope, $log, $time
 		game.global.nextTick = Date.now();
 		game.global.entities.push(game.utils.createPlayer([90,440]));
 		game.global.entities.push(game.utils.createEnemy([1400,440]));
-		game.drawLoop();
-		game.tickLoop();
+		game.drawLoop(0);
+		game.tickLoop(0);
 	};
 	
 	/**

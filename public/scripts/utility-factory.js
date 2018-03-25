@@ -57,7 +57,7 @@ angular.module('app').factory('utilityFactory', function (classFactory, constFac
 					new classes.part([0,30],data.mirrorX(consts.parts.gun1),consts.colors.ship2),
 					new classes.part([-50,-30],consts.parts.body1,consts.colors.ship1)
 				],
-				undefined,
+				[],
 				{
 					muzzles: [[138,396],[138,474]],
 					prevMuzzle: 0,
@@ -97,7 +97,7 @@ angular.module('app').factory('utilityFactory', function (classFactory, constFac
 					new classes.part([15,12],data.mirrorX(data.mirrorY(consts.parts.gun1)),consts.colors.ship2),
 					new classes.part([-50,0],data.mirrorY(consts.parts.body2),consts.colors.ship3)
 				],
-				undefined,
+				[],
 				{
 					muzzles: [[1400,414],[1400,456]],
 					prevMuzzle: 0,
@@ -143,9 +143,12 @@ angular.module('app').factory('utilityFactory', function (classFactory, constFac
 				}
 			);
 		},
-		updateStats: function (stats) {
+		updateStats: function (entity) {
+			var stats = entity.stats;
+			var modules = entity.modules;
 			stats.mhp = stats.bhp;
-			stats.chp = stats.mhp;
+			if(stats.chp === undefined)
+				stats.chp = stats.mhp;
 			stats.mad = stats.bad;
 			stats.mrs = stats.brs;
 			stats.mrp = stats.brp;
