@@ -78,7 +78,7 @@ angular.module('app').factory('utilityFactory', function (classFactory, constFac
 		createEnemy: function (pos) {
 			return new classes.entity(
 				consts.triangle,
-				[pos[0]+200,pos[1]],
+				[1500+100,pos[1]],
 				(function () {
 					var stats = Object.assign({},consts.stats.enemy1);
 					stats.mhp = stats.bhp;
@@ -153,6 +153,9 @@ angular.module('app').factory('utilityFactory', function (classFactory, constFac
 			stats.mac = stats.bac;
 			stats.mcc = stats.bcc;
 			stats.mcd = stats.bcd;
+		},
+		applyCollisionEffects: function (ship, bullet) {
+			ship.stats.chp -= bullet.stats.damage;
 		}
 	};
 	return data;

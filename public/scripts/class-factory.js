@@ -27,10 +27,10 @@ angular.module('app').factory('classFactory', function () {
 					return;
 				for (var i = 0; i < this.parts.length; i++) {
 					if (this.checkCollisionPart(this.parts[i], this.pos, entity.parts[0], entity.pos)) {
-						console.log("Collision");
-						return;
+						return true;
 					}
 				}
+				return false;
 			};
 			/**
 			 * Perform collision detection through counting the number of intersected sides

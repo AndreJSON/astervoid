@@ -11,7 +11,6 @@ angular.module('app').controller('gameController', function ($scope, $log, $time
 		if (Date.now() > game.global.nextTick) {
 			game.global.nextTick += (1000 / game.global.tps);
 			game.tick();
-			//$log.info("Ticked the game.");
 		}
 		$timeout(game.tickLoop, 10);
 	};
@@ -19,7 +18,6 @@ angular.module('app').controller('gameController', function ($scope, $log, $time
 	game.drawLoop = function () {
 		game.global.nextFrame = Date.now() + (1000 / game.global.fps);
 		game.draw($scope.ctx);
-		//$log.info("Drew background.");
 		requestAnimationFrame(game.drawLoop);
 	};
 
@@ -51,7 +49,10 @@ angular.module('app').controller('gameController', function ($scope, $log, $time
 	game.checkCollisions = function () {
 		for (var i = 2; i < game.global.entities.length; i++) {
 			//game.global.entities[0].checkCollision(game.global.entities[i]);
-			game.global.entities[1].checkCollision(game.global.entities[i]);
+			if (game.global.entities[1].checkCollision(game.global.entities[i])) {
+				game.utils.applyCollisionEffects(game.global.entities[1],game.global.entities[i]);
+				game.global.entities.splice(i,1);
+			}
 		}
 	};
 
@@ -59,20 +60,20 @@ angular.module('app').controller('gameController', function ($scope, $log, $time
 		var entity;
 		for (var i = game.global.stars.length-1; i >= 0; i--) {
 			entity = game.global.stars[i];
-			if (entity.pos[0] > 1500 + 100 ||
-				entity.pos[0] < -100 ||
-				entity.pos[1] > 890 + 100 ||
-				entity.pos[1] < -100
+			if (entity.pos[0] > 1500 + 20 ||
+				entity.pos[0] < -20 ||
+				entity.pos[1] > 890 + 20 ||
+				entity.pos[1] < -20
 			) {
 				game.global.stars.splice(i,1);
 			}
 		}
 		for (var i = game.global.entities.length-1; i >= 0; i--) {
 			entity = game.global.entities[i];
-			if (entity.pos[0] > 1500 + 100 ||
-				entity.pos[0] < -100 ||
-				entity.pos[1] > 890 + 100 ||
-				entity.pos[1] < -100
+			if (entity.pos[0] > 1500 + 101 ||
+				entity.pos[0] < -101 ||
+				entity.pos[1] > 890 + 101 ||
+				entity.pos[1] < -101
 			) {
 				game.global.entities.splice(i,1);
 			}
@@ -110,8 +111,8 @@ angular.module('app').controller('gameController', function ($scope, $log, $time
 		context.strokeRect(22,31,120,24);
 		context.strokeRect(1358,31,120,24);
 		context.fillStyle = "rgba(140,0,0,1)";
-		context.fillRect(23,32,118*(game.global.entities[0].stats.chp/game.global.entities[0].stats.mhp),22);
-		context.fillRect(1359,32,118*(game.global.entities[1].stats.chp/game.global.entities[1].stats.mhp),22);
+		context.fillRect(23,32,118*(Math.max(0,game.global.entities[0].stats.chp/game.global.entities[0].stats.mhp)),22);
+		context.fillRect(1359,32,118*(Math.max(0,game.global.entities[1].stats.chp/game.global.entities[1].stats.mhp)),22);
 		context.fillStyle = game.global.colors.star1;
 		context.font = "bold 18px Arial";
 		context.textAlign = "center";
