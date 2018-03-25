@@ -79,19 +79,7 @@ angular.module('app').factory('utilityFactory', function (classFactory, constFac
 			return new classes.entity(
 				consts.triangle,
 				[1500+100,pos[1]],
-				(function () {
-					var stats = Object.assign({},consts.stats.enemy1);
-					stats.mhp = stats.bhp;
-					stats.chp = stats.mhp;
-					stats.mad = stats.bad;
-					stats.mrs = stats.brs;
-					stats.mrp = stats.brp;
-					stats.mas = stats.bas;
-					stats.mac = stats.bac;
-					stats.mcc = stats.bcc;
-					stats.mcd = stats.bcd;
-					return stats;
-				})(),
+				Object.assign({},consts.stats.enemy1),
 				[
 					new classes.part([15,-12],data.mirrorY(consts.parts.gun1),consts.colors.ship2),
 					new classes.part([15,12],data.mirrorX(data.mirrorY(consts.parts.gun1)),consts.colors.ship2),
@@ -148,8 +136,6 @@ angular.module('app').factory('utilityFactory', function (classFactory, constFac
 			var stats = entity.stats;
 			var modules = entity.modules;
 			stats.mhp = stats.bhp;
-			if(stats.chp === undefined)
-				stats.chp = stats.mhp;
 			stats.mad = stats.bad;
 			stats.mrs = stats.brs;
 			stats.mrp = stats.brp;
@@ -157,6 +143,11 @@ angular.module('app').factory('utilityFactory', function (classFactory, constFac
 			stats.mac = stats.bac;
 			stats.mcc = stats.bcc;
 			stats.mcd = stats.bcd;
+			if(stats.chp === undefined)
+				stats.chp = stats.mhp;
+			else {
+				stats.chp = Math.min(stats.mhp,stats.chp+stats.mrp);
+			}
 		},
 		applyCollisionEffects: function (ship, bullet) {
 			ship.stats.chp -= bullet.stats.damage;
