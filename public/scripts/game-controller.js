@@ -96,10 +96,10 @@ angular.module('app').controller('gameController', function ($scope, $log, $time
 		context.fillStyle = game.global.colors.background;
 		context.fill();
 		for (var i = 0; i < game.global.stars.length; i++) {
-			game.global.stars[i].draw(context);
+			game.utils.drawEntity(game.global.stars[i], context);
 		}
 		for (var i = 0; i < game.global.entities.length; i++) {
-			game.global.entities[i].draw(context);
+			game.utils.drawEntity(game.global.entities[i], context);
 		}
 		game.drawBar(context);
 	};

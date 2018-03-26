@@ -17,12 +17,29 @@ angular.module('app').factory('utilityFactory', function (classFactory, constFac
 			}
 			return res;
 		},
-		scale: function (points,changeX, changeY) {
+		scale: function (points,changeX,changeY) {
 			res = [];
 			for (var i = 0; i < points.length; i++) {
 				res.push([changeX*points[i][0],changeY*points[i][1]]);
 			}
 			return res;
+		},
+		drawEntity: function (entity,context) {
+			for (var i = 0; i < entity.parts.length; i++) {
+				data.drawPart(entity.parts[i], context, entity.pos[0], entity.pos[1]);
+			}
+		},
+		drawPart: function (part,context,x,y) {
+			x += part.pos[0];
+			y += part.pos[1];
+			context.beginPath();
+			context.moveTo(x,y);
+			for (var i = 0; i < part.points.length; i++) {
+				context.lineTo(x+part.points[i][0],y+part.points[i][1]);
+			}
+			context.closePath();
+			context.fillStyle = part.color;
+			context.fill();
 		},
 		drawPolygon: function (points,offset,color,context) {
 			context.beginPath();
