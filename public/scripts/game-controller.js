@@ -52,11 +52,11 @@ angular.module('app').controller('gameController', function ($scope, $log, $time
 
 	game.checkCollisions = function () {
 		for (var i = 2; i < game.global.entities.length; i++) {
-			if (game.global.entities[0].checkCollision(game.global.entities[i])) {
+			if (game.utils.checkCollision(game.global.entities[0],game.global.entities[i])) {
 				game.utils.applyCollisionEffects(game.global.entities[0],game.global.entities[i]);
 				game.global.entities.splice(i,1);
 			}
-			if (game.global.entities[1].checkCollision(game.global.entities[i])) {
+			if (game.utils.checkCollision(game.global.entities[1],game.global.entities[i])) {
 				game.utils.applyCollisionEffects(game.global.entities[1],game.global.entities[i]);
 				game.global.entities.splice(i,1);
 			}

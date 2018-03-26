@@ -149,6 +149,48 @@ angular.module('app').factory('utilityFactory', function (classFactory, constFac
 				stats.chp = Math.min(stats.mhp,stats.chp+stats.mrp);
 			}
 		},
+		checkCollision: function (ship, bullet) {
+			if(bullet.team === ship.team)
+				return;
+			if (Math.abs(bullet.pos[0] - ship.pos[0]) > 150) //Might need to become more elaborate later.
+				return;
+			for (var i = 0; i < ship.parts.length; i++) {
+				if (data.checkCollisionPart(ship.parts[i], ship.pos, bullet.parts[0], bullet.pos)) {
+					return true;
+				}
+			}
+			return false;
+		},
+		/**
+		 * Perform collision detection through counting the number of intersected sides
+		 * of one polygon drawing a line straight out to the right from each corner of
+		 * the other polygon. 
+		 */
+		checkCollisionPart: function(sPart,sPos,bPart,bPos) {
+			var sPoints = [], bPoints = [];
+			for (var i = 0; i < sPart.points.length; i++) {
+				sPoints.push([sPart.points[i][0] + sPart.pos[0] + sPos[0], sPart.points[i][1] + sPart.pos[1] + sPos[1]]);
+			}
+			for (var i = 0; i < bPart.points.length; i++) {
+				bPoints.push([bPart.points[i][0] + bPart.pos[0] + bPos[0], bPart.points[i][1] + bPart.pos[1] + bPos[1]]);
+			}
+			for (var i = 0; i < bPoints.length; i++) {
+				var inside = false;
+				for (var j = 0; j < sPoints.length-1; j++) {
+					var e = bPoints[i], p1 = sPoints[j], p2 = sPoints[j+1];
+					if ((e[1] > p1[1] && e[1] > p2[1]) || (e[1] < p1[1] && e[1] < p2[1])) //Line is entirely above or below entity.
+						continue;
+					var scale = Math.abs((e[1]-p1[1])/(p2[1]-p1[1]));
+					if (scale === Infinity)
+						continue;
+					if ( e[0] < (p1[0] + scale * (p2[0] - p1[0])))
+						inside = !inside;
+				}
+				if(inside)
+					return true;
+			}
+			return false;
+		},
 		applyCollisionEffects: function (ship, bullet) {
 			ship.stats.chp -= bullet.stats.damage;
 		}
