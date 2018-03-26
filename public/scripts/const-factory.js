@@ -39,7 +39,8 @@ angular.module('app').factory('constFactory', function () {
 				bas: 0.7,	//Base attack speed.
 				bac: 0.95,	//Base accuracy.
 				bcc: 0.01,	//Base crit chance.
-				bcd: 2		//Base crit damage multiplier.
+				bcd: 2,		//Base crit damage multiplier.
+				bbs: 300	//Base bullet speed.
 			},
 			enemy1: {
 				bhp: 5,
@@ -49,7 +50,8 @@ angular.module('app').factory('constFactory', function () {
 				bas: 0.25,
 				bac: 0.95,
 				bcc: 0.00,
-				bcd: 2
+				bcd: 2,
+				bbs: 300
 			},
 			test: {
 				bhp: 5,
@@ -59,7 +61,8 @@ angular.module('app').factory('constFactory', function () {
 				bas: 4,
 				bac: 1,
 				bcc: 0.5,
-				bcd: 2
+				bcd: 2,
+				bbs: 300
 			}
 		}
 	};

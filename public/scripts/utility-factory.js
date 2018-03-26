@@ -79,12 +79,12 @@ angular.module('app').factory('utilityFactory', function (classFactory, constFac
 					muzzles: [[138,396],[138,474]],
 					prevMuzzle: 0,
 					accumulator: 0,
-					shoot: function (as, ac, ad, cc, cd) {
+					shoot: function (as, ac, ad, cc, cd, bs) {
 						this.accumulator += as/consts.tps;
 						if (this.accumulator > 1) {
 							this.accumulator -= 1;
 							this.prevMuzzle = (this.prevMuzzle+1)%this.muzzles.length;
-							return data.createBullet(consts.square,this.muzzles[this.prevMuzzle], [1440,440], ac, ad, cc, cd);
+							return data.createBullet(consts.square,this.muzzles[this.prevMuzzle], [1440,440], ac, ad, cc, cd, bs);
 						}
 						return undefined;
 					}
@@ -107,12 +107,12 @@ angular.module('app').factory('utilityFactory', function (classFactory, constFac
 					muzzles: [[1400,414],[1400,456]],
 					prevMuzzle: 0,
 					accumulator: 0,
-					shoot: function (as, ac, ad, cc, cd) {
+					shoot: function (as, ac, ad, cc, cd, bs) {
 						this.accumulator += as/consts.tps;
 						if (this.accumulator > 1) {
 							this.accumulator -= 1;
 							this.prevMuzzle = (this.prevMuzzle+1)%this.muzzles.length;
-							return data.createBullet(consts.triangle,this.muzzles[this.prevMuzzle], [90,440], ac, ad, cc, cd);
+							return data.createBullet(consts.triangle,this.muzzles[this.prevMuzzle], [90,440], ac, ad, cc, cd, bs);
 						}
 						return undefined;
 					}
@@ -127,27 +127,52 @@ angular.module('app').factory('utilityFactory', function (classFactory, constFac
 				}
 			);
 		},
-		//Used by both sides.
-		createBullet: function (team, startPos, targetPos, accuracy, damage, critChance, critDamage) {
+		/**
+		 * Used by both sides.
+		 */
+		createBullet: function (team, startPos, targetPos, accuracy, damage, critChance, critDamage, speed) {
 			var square = team === consts.square; //If squares are shooting, this will be true.
 			var crit = Math.random() < critChance;
 			var bulletPart = square? consts.parts.bullet1 : data.mirrorY(consts.parts.bullet2);
 			var bulletColor = square? (crit? consts.colors.bulletcrit1 : consts.colors.bullet1) : (crit? consts.colors.bulletcrit2 : consts.colors.bullet2);
-			var absVel = 300;
 			return new classes.entity(
 				team,
 				startPos,
-				{damage: (crit? critDamage:1) * damage},
+				{damage: (crit? critDamage:1) * damage, speed: speed},
 				[new classes.part([-3,-1], bulletPart, bulletColor)],
 				undefined,
 				new classes.shooter(),
 				{
-					vel: [(square? 1:-1)*Math.cos(Math.PI/3*(1-accuracy)*(Math.random()-Math.random())+Math.atan((targetPos[1]-startPos[1])/(targetPos[0]-startPos[0])))*absVel,(square? 1:-1) * Math.sin(Math.PI/3*(1-accuracy)*(Math.random()-Math.random())+Math.atan((targetPos[1]-startPos[1])/(targetPos[0]-startPos[0])))*absVel],
+					vel: [(square? 1:-1)*Math.cos(Math.PI/3*(1-accuracy)*(Math.random()-Math.random())+Math.atan((targetPos[1]-startPos[1])/(targetPos[0]-startPos[0])))*speed,(square? 1:-1) * Math.sin(Math.PI/3*(1-accuracy)*(Math.random()-Math.random())+Math.atan((targetPos[1]-startPos[1])/(targetPos[0]-startPos[0])))*speed],
 					nextPos: function (pos) {
 						return [pos[0] + (this.vel[0]/consts.tps), pos[1] + (this.vel[1]/consts.tps)];
 					}
 				}
 			);
+		},
+		createShrapnel: function (bullet) {
+			var part = bullet.parts[0];
+			var shrapnel = [];
+			var xComp = [1,Math.sqrt(2)/2,0,-Math.sqrt(2)/2,-1,-Math.sqrt(2)/2,0,Math.sqrt(2)/2];
+			var yComp = [0,Math.sqrt(2)/2,1,Math.sqrt(2)/2,0,-Math.sqrt(2)/2,-1,-Math.sqrt(2)/2];
+			for (var i = 0; i < 8; i++) {
+				shrapnel.push(new classes.entity(
+					consts.neutral,
+					[bullet.pos[0], bullet.pos[1]],
+					{},
+					[new classes.part([part.pos[0],part.pos[1]], data.scale(part.points, 0.5, 0.5), part.color)],
+					undefined,
+					new classes.shooter(),
+					{
+						i: i, //Dunno exactly why this is needed :s
+						speed: bullet.stats.speed,
+						nextPos: function (pos) {
+							return [pos[0] + (xComp[this.i]*this.speed/consts.tps), pos[1] + (yComp[this.i]*this.speed/consts.tps)];
+						}
+					}
+				));
+			}
+			return shrapnel;
 		},
 		updateStats: function (entity) {
 			var stats = entity.stats;
@@ -160,6 +185,7 @@ angular.module('app').factory('utilityFactory', function (classFactory, constFac
 			stats.mac = stats.bac;
 			stats.mcc = stats.bcc;
 			stats.mcd = stats.bcd;
+			stats.mbs = stats.bbs;
 			if(stats.chp === undefined)
 				stats.chp = stats.mhp;
 			else {
@@ -167,10 +193,10 @@ angular.module('app').factory('utilityFactory', function (classFactory, constFac
 			}
 		},
 		checkCollision: function (ship, bullet) {
-			if(bullet.team === ship.team)
-				return;
+			if(bullet.team === consts.neutral || bullet.team === ship.team)
+				return false;
 			if (Math.abs(bullet.pos[0] - ship.pos[0]) > 150) //Might need to become more elaborate later.
-				return;
+				return false;
 			for (var i = 0; i < ship.parts.length; i++) {
 				if (data.checkCollisionPart(ship.parts[i], ship.pos, bullet.parts[0], bullet.pos)) {
 					return true;

@@ -54,10 +54,12 @@ angular.module('app').controller('gameController', function ($scope, $log, $time
 		for (var i = 2; i < game.global.entities.length; i++) {
 			if (game.utils.checkCollision(game.global.entities[0],game.global.entities[i])) {
 				game.utils.applyCollisionEffects(game.global.entities[0],game.global.entities[i]);
+				game.global.entities.push.apply(game.global.entities,game.utils.createShrapnel(game.global.entities[i]));
 				game.global.entities.splice(i,1);
 			}
 			if (game.utils.checkCollision(game.global.entities[1],game.global.entities[i])) {
 				game.utils.applyCollisionEffects(game.global.entities[1],game.global.entities[i]);
+				game.global.entities.push.apply(game.global.entities,game.utils.createShrapnel(game.global.entities[i]));
 				game.global.entities.splice(i,1);
 			}
 		}
